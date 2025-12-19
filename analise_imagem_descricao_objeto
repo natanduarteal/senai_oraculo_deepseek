@@ -1,0 +1,24 @@
+import tensorflow as tf
+from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input, decode_predictions
+from tensorflow.keras.preprocessing import image
+import numpy as np
+#from googletrans import Translator
+
+#tradutor=Translator()
+modelo = MobileNetV2(weights='imagenet') # Carrega o modelo
+
+# Carrega e pré-processa a imagem
+caminho_imagem = 'urso.jpg'  
+imagem = image.load_img(caminho_imagem, target_size=(224, 224))
+imagem_array = image.img_to_array(imagem)
+imagem_array = np.expand_dims(imagem_array, axis=0)
+imagem_array = preprocess_input(imagem_array)
+
+# Realiza a previsão
+previsao = modelo.predict(imagem_array)
+resultado_decodificado = decode_predictions(previsao, top=3)[0]
+
+print("Resultados da classificação:")
+for i, (id_imagenet, rotulo, confianca) in enumerate(resultado_decodificado):
+    print(f"{i+1}. {rotulo} ({confianca * 100:.2f}%)")
+
